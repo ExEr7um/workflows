@@ -1,6 +1,6 @@
 # Workflows
 
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/pacific-agency/workflows?color=%23aac811&label=%D0%A0%D0%B5%D0%BB%D0%B8%D0%B7)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/exer7um/workflows?color=%23aac811&label=%D0%A0%D0%B5%D0%BB%D0%B8%D0%B7)
 
 Репозиторий с переиспользуемыми `workflows`.
 
@@ -11,7 +11,7 @@
 После создания какой-либо `job`, в ней указываем:
 
 ```yml
-uses: Pacific-Agency/workflows/.github/workflows/<Название workflow>.yml@<Версия workflow>
+uses: ExEr7um/workflows/.github/workflows/<Название workflow>.yml@<Версия workflow>
 ```
 
 ### Пример
@@ -24,7 +24,7 @@ on:
       - main
 jobs:
   build:
-    uses: Pacific-Agency/workflows/.github/workflows/build.yml@v0.1.0
+    uses: ExEr7um/workflows/.github/workflows/build.yml@v0.1.0
 
 ```
 
