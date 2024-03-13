@@ -11,8 +11,6 @@ on:
       GPG_PRIVATE_KEY:
         required: true
         description: "Ключ для подписи коммита"
-      BOT_ACCESS_TOKEN:
-        description: "Токен бота для пуша в защищенные ветки"
 
 permissions:
   contents: write
@@ -24,15 +22,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.BOT_ACCESS_TOKEN || github.token }}
+          token: ${{ github.token }}
 
-      - name: Настройка NodeJS
-        uses: actions/setup-node@v4
+      - name: Настройка Bun
+        uses: oven-sh/setup-bun@v1
 
       - name: Конфигурация пользователя
         run: |
-          git config --global user.email "y.cloud@mypacific.ru"
-          git config --global user.name "pacific-bot"
+          git config --global user.email "exer7um@gmail.com"
+          git config --global user.name "ExEr7um"
 
       - name: Импорт ключа GPG
         uses: crazy-max/ghaction-import-gpg@v6
@@ -43,6 +41,5 @@ jobs:
 
       - name: Создание списка изменений и релиза на GitHub
         run: |
-          npm config set sign-git-tag true
-          npx changelogen@latest --release --push -r ${{ inputs.version }}
-          npx changelogen@latest gh release --token ${{ github.token }}
+          bunx changelogen@latest --release --push -r ${{ inputs.version }}
+          bunx changelogen@latest gh release --token ${{ github.token }}
