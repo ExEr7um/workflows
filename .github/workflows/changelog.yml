@@ -11,6 +11,9 @@ on:
       GPG_PRIVATE_KEY:
         required: true
         description: "Ключ для подписи коммита"
+      PASSPHRASE:
+        required: true
+        description: "Кодовая фраза для подписи коммита"
 
 permissions:
   contents: write
@@ -36,8 +39,10 @@ jobs:
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
           git_user_signingkey: true
           git_commit_gpgsign: true
+          git_tag_gpgsign: true
 
       - name: Создание списка изменений и релиза на GitHub
         run: |
