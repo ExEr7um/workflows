@@ -1,4 +1,38 @@
 
+## v0.5.0
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.4.0...v0.5.0)
+
+### 🚀 Улучшения
+
+- ⚠️  Удаление скриптов бекенда и деплоя ([0705d6d](https://github.com/ExEr7um/workflows/commit/0705d6d))
+- ⚠️  Использование Bun вместо pnpm ([db59f72](https://github.com/ExEr7um/workflows/commit/db59f72))
+- ⚠️  Добавление `PASSPHRASE` в `changelog.yml` ([3d58fe2](https://github.com/ExEr7um/workflows/commit/3d58fe2))
+
+### 🐞 Исправления
+
+- Изменение упоминаний Pacific Agency ([6c7bcf7](https://github.com/ExEr7um/workflows/commit/6c7bcf7))
+
+### 📖 Документация
+
+- Обновление цвета бейджа ([231c37f](https://github.com/ExEr7um/workflows/commit/231c37f))
+
+### 🏡 Другие изменения
+
+- Удаление Renovate ([bd1a1e0](https://github.com/ExEr7um/workflows/commit/bd1a1e0))
+- Обновление CODEOWNERS ([524f4a1](https://github.com/ExEr7um/workflows/commit/524f4a1))
+- Исправление списка секретов в `release-package.yml` ([2f82c0f](https://github.com/ExEr7um/workflows/commit/2f82c0f))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Удаление скриптов бекенда и деплоя ([0705d6d](https://github.com/ExEr7um/workflows/commit/0705d6d))
+- ⚠️  Использование Bun вместо pnpm ([db59f72](https://github.com/ExEr7um/workflows/commit/db59f72))
+- ⚠️  Добавление `PASSPHRASE` в `changelog.yml` ([3d58fe2](https://github.com/ExEr7um/workflows/commit/3d58fe2))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](http://github.com/ExEr7um))
+
 ## v0.4.0
 
 [compare changes](https://github.com/Pacific-Agency/workflows/compare/v0.3.0...v0.4.0)
