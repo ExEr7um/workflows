@@ -1,4 +1,21 @@
 
+## v0.6.0
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.5.0...v0.6.0)
+
+### 🚀 Улучшения
+
+- Скрипт `Публикация на npm` ([37551f3](https://github.com/ExEr7um/workflows/commit/37551f3))
+
+### 🐞 Исправления
+
+- Исправление передачи флага `--production` ([4c3ce8a](https://github.com/ExEr7um/workflows/commit/4c3ce8a))
+- Исправление скрипта `publish.yml` ([1347a3d](https://github.com/ExEr7um/workflows/commit/1347a3d))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](http://github.com/ExEr7um))
+
 ## v0.5.0
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.4.0...v0.5.0)
