@@ -13,7 +13,7 @@ jobs:
         uses: oven-sh/setup-bun@v1
 
       - name: Установка зависимостей
-        run: bun install --prod --ignore-scripts
+        run: bun install --production --ignore-scripts
 
       - name: Сборка проекта
         run: bun run build
