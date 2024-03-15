@@ -3,13 +3,15 @@ name: Публикация на npm
 on:
   workflow_call:
     secrets:
-      NODE_AUTH_TOKEN:
+      NPM_TOKEN:
         required: true
         description: "Токен для авторизации в npm"
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -17,6 +19,8 @@ jobs:
         uses: actions/setup-node@v4
 
       - name: Публикация
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          access: public
+          provenance: true
+          token: ${{ secrets.NPM_TOKEN }}
