@@ -1,4 +1,16 @@
 
+## v0.6.1
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.6.0...v0.6.1)
+
+### 🐞 Исправления
+
+- Установка зависимостей при линте ([fed4745](https://github.com/ExEr7um/workflows/commit/fed4745))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](http://github.com/ExEr7um))
+
 ## v0.6.0
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.5.0...v0.6.0)
