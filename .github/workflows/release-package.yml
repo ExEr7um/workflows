@@ -13,6 +13,3 @@ jobs:
     uses: ExEr7um/workflows/.github/workflows/changelog.yml@main
     with:
       version: ${{ inputs.version }}
-    secrets:
-      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-      PASSPHRASE: ${{ secrets.PASSPHRASE }}

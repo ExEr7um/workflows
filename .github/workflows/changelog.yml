@@ -7,13 +7,6 @@ on:
         description: "Версия для package.json"
         required: true
         type: string
-    secrets:
-      GPG_PRIVATE_KEY:
-        required: true
-        description: "Ключ для подписи коммита"
-      PASSPHRASE:
-        required: true
-        description: "Кодовая фраза для подписи коммита"
 
 permissions:
   contents: write
@@ -32,17 +25,8 @@ jobs:
 
       - name: Конфигурация пользователя
         run: |
-          git config --global user.email "exer7um@gmail.com"
-          git config --global user.name "ExEr7um"
-
-      - name: Импорт ключа GPG
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_tag_gpgsign: true
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Создание списка изменений и релиза на GitHub
         run: |
