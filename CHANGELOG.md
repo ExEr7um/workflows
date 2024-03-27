@@ -1,4 +1,16 @@
 
+## v0.6.2
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.6.1...v0.6.2)
+
+### 🚀 Улучшения
+
+- Изменение автора коммита на `github-actions[bot]` ([b6c64ba](https://github.com/ExEr7um/workflows/commit/b6c64ba))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](http://github.com/ExEr7um))
+
 ## v0.6.1
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.6.0...v0.6.1)
