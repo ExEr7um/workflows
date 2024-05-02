@@ -1,0 +1,22 @@
+name: Публикация расширения VSCode
+
+on:
+  workflow_call:
+    secrets:
+      VSCE_PAT:
+        required: true
+        description: "Токен для авторизации в VSCode Marketplace"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Настройка Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Публикация
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: bunx @vscode/vsce@latest publish
