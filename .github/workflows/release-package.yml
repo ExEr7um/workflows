@@ -10,6 +10,7 @@ on:
 
 jobs:
   changelog:
+    name: Релиз проекта
     uses: ExEr7um/workflows/.github/workflows/changelog.yml@main
     with:
       version: ${{ inputs.version }}

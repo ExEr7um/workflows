@@ -9,6 +9,7 @@ on:
 
 jobs:
   publish:
+    name: Публикация на npm
     runs-on: ubuntu-latest
     permissions:
       id-token: write

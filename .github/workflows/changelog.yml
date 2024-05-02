@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   changelog-and-release:
+    name: Список изменений и релиз GitHub
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
