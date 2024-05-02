@@ -1,4 +1,26 @@
 
+## v0.7.0
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.6.2...v0.7.0)
+
+### 🚀 Улучшения
+
+- ⚠️  Переименование `publish.yml` в `publish-npm.yml` ([35a5130](https://github.com/ExEr7um/workflows/commit/35a5130))
+- Скрипт `Публикация расширения VSCode` ([bfc6d67](https://github.com/ExEr7um/workflows/commit/bfc6d67))
+- Скрипт `Семантический заголовок PR` ([fc14627](https://github.com/ExEr7um/workflows/commit/fc14627))
+
+### 🐞 Исправления
+
+- Добавление `name` для шагов в скриптах ([0fc525c](https://github.com/ExEr7um/workflows/commit/0fc525c))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Переименование `publish.yml` в `publish-npm.yml` ([35a5130](https://github.com/ExEr7um/workflows/commit/35a5130))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](http://github.com/ExEr7um))
+
 ## v0.6.2
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.6.1...v0.6.2)
