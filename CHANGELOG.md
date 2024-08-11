@@ -1,4 +1,16 @@
 
+## v0.7.1
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.7.0...v0.7.1)
+
+### 🐞 Исправления
+
+- Добавление параметра `build` для `publish-npm` ([7bc5877](https://github.com/ExEr7um/workflows/commit/7bc5877))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](http://github.com/ExEr7um))
+
 ## v0.7.0
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.6.2...v0.7.0)
