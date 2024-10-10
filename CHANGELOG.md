@@ -1,4 +1,16 @@
 
+## v0.7.2
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.7.1...v0.7.2)
+
+### 🏡 Другие изменения
+
+- Настройка Renovate ([d2d0b18](https://github.com/ExEr7um/workflows/commit/d2d0b18))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](http://github.com/ExEr7um))
+
 ## v0.7.1
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.7.0...v0.7.1)
