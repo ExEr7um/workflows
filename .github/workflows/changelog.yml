@@ -22,7 +22,7 @@ jobs:
           token: ${{ github.token }}
 
       - name: Настройка Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
 
       - name: Конфигурация пользователя
         run: |
