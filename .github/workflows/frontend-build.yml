@@ -2,6 +2,10 @@ name: Сборка проекта
 
 on:
   workflow_call:
+    inputs:
+      installDevDependencies:
+        type: boolean
+        description: "Требуется ли установка devDependencies"
 
 jobs:
   build:
@@ -15,6 +19,10 @@ jobs:
 
       - name: Установка зависимостей
         run: bun install --production --ignore-scripts
+
+      - name: Установка devDependencies
+        if: inputs.installDevDependencies
+        run: bun install --dev
 
       - name: Сборка проекта
         run: bun run build
