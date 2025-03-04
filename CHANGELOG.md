@@ -1,4 +1,20 @@
 
+## v0.7.3
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.7.2...v0.7.3)
+
+### 🚀 Улучшения
+
+- Возможность установки `devDependencies` в `frontend-build` ([67a5d6b](https://github.com/ExEr7um/workflows/commit/67a5d6b))
+
+### 🐞 Исправления
+
+- Запуск ESLint в среде Bun ([93b6765](https://github.com/ExEr7um/workflows/commit/93b6765))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](https://github.com/ExEr7um))
+
 ## v0.7.2
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.7.1...v0.7.2)
