@@ -5,7 +5,7 @@ on:
     inputs:
       installDevDependencies:
         type: boolean
-        description: "Требуется ли установка devDependencies"
+        description: Требуется ли установка devDependencies
 
 jobs:
   build:
