@@ -1,4 +1,20 @@
 
+## v0.8.0
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.7.3...v0.8.0)
+
+### 🚀 Улучшения
+
+- Выбор типа обновления вместо версии ([cbc91f0](https://github.com/ExEr7um/workflows/commit/cbc91f0))
+
+### 🏡 Другие изменения
+
+- Настройка ESLint, Prettier и CI ([#4](https://github.com/ExEr7um/workflows/pull/4))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](https://github.com/ExEr7um))
+
 ## v0.7.3
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.7.2...v0.7.3)
