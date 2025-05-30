@@ -3,14 +3,19 @@ name: Релиз проекта
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: Версия релиза
+      updateType:
+        description: Тип обновления
         required: true
-        type: string
+        default: patch
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
 
 jobs:
   changelog:
     name: Релиз проекта
     uses: ExEr7um/workflows/.github/workflows/changelog.yml@main
     with:
-      version: ${{ inputs.version }}
+      updateType: ${{ inputs.updateType }}
