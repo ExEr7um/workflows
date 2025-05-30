@@ -5,7 +5,7 @@ on:
     secrets:
       VSCE_PAT:
         required: true
-        description: "Токен для авторизации в VSCode Marketplace"
+        description: Токен для авторизации в VSCode Marketplace
 
 jobs:
   publish:

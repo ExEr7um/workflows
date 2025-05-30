@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       updateType:
-        description: Тип обновления
+        description: Тип релиза
         required: true
         type: string
 

@@ -1,7 +1,6 @@
 name: Семантический заголовок PR
 
-on:
-  workflow_call:
+on: workflow_call
 
 permissions:
   pull-requests: read

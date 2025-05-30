@@ -25,7 +25,6 @@ on:
 jobs:
   build:
     uses: ExEr7um/workflows/.github/workflows/build.yml@v0.1.0
-
 ```
 
 ## Создание новых `workflow`
