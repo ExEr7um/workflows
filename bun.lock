@@ -4,7 +4,7 @@
     "": {
       "name": "workflows",
       "devDependencies": {
-        "@exer7um/eslint-config": "2.1.6",
+        "@exer7um/eslint-config": "2.2.0",
         "@exer7um/prettier-config": "0.8.0",
         "husky": "9.1.7",
         "nano-staged": "0.8.0",
@@ -56,7 +56,7 @@
 
     "@eslint/plugin-kit": ["@eslint/plugin-kit@0.3.1", "", { "dependencies": { "@eslint/core": "^0.14.0", "levn": "^0.4.1" } }, "sha512-0J+zgWxHN+xXONWIyPWKFMgVuJoZuGiIFu8yxk7RJjxkzpGmyja5wRFqZIVtjDVOQpV+Rw0iOAjYPE2eQyjr0w=="],
 
-    "@exer7um/eslint-config": ["@exer7um/eslint-config@2.1.6", "", { "dependencies": { "@nuxt/eslint-config": "^1.5.2", "@vitest/eslint-plugin": "^1.3.4", "defu": "^6.1.4", "eslint": "^9.30.1", "eslint-config-flat-gitignore": "^2.1.0", "eslint-config-prettier": "^10.1.5", "eslint-plugin-de-morgan": "^1.3.0", "eslint-plugin-depend": "^1.2.0", "eslint-plugin-jsdoc": "^51.3.3", "eslint-plugin-jsonc": "^2.20.1", "eslint-plugin-perfectionist": "^4.15.0", "eslint-plugin-sonarjs": "^3.0.4", "eslint-plugin-tailwindcss": "^3.18.0", "eslint-plugin-unicorn": "^59.0.1", "eslint-plugin-vuejs-accessibility": "^2.4.1", "eslint-plugin-yml": "^1.18.0" } }, "sha512-Du7kXe6w1JWLmiSoWH38sUayb9n8TfaNHh5LYhPMZ/jJCWXdG4R081x6htyy/pb4K8sXhLfkss7XQGPi5+63xA=="],
+    "@exer7um/eslint-config": ["@exer7um/eslint-config@2.2.0", "", { "dependencies": { "@nuxt/eslint-config": "^1.5.2", "@vitest/eslint-plugin": "^1.3.4", "defu": "^6.1.4", "eslint": "^9.30.1", "eslint-config-flat-gitignore": "^2.1.0", "eslint-config-prettier": "^10.1.5", "eslint-plugin-de-morgan": "^1.3.0", "eslint-plugin-depend": "^1.2.0", "eslint-plugin-jsdoc": "^51.3.4", "eslint-plugin-jsonc": "^2.20.1", "eslint-plugin-perfectionist": "^4.15.0", "eslint-plugin-sonarjs": "^3.0.4", "eslint-plugin-tailwindcss": "^3.18.0", "eslint-plugin-unicorn": "^59.0.1", "eslint-plugin-vuejs-accessibility": "^2.4.1", "eslint-plugin-yml": "^1.18.0" } }, "sha512-fZ3JYYoptxZfL8tXotQ0ZUZca6AZaUYKsRocz7rO48rYU0RVIAj1Xm8OX8bE/Sf5Og7kk9oS7+kkzKlEgtrmmg=="],
 
     "@exer7um/prettier-config": ["@exer7um/prettier-config@0.8.0", "", { "dependencies": { "@prettier/plugin-oxc": "0.0.2", "prettier": "^3.6.0", "prettier-plugin-css-order": "^2.1.2", "prettier-plugin-packagejson": "^2.5.15", "prettier-plugin-tailwindcss": "^0.6.13" } }, "sha512-rgL8GAADBq67jGIBFeEbxjGKtdPFsFd+2B0vmDv6Dpu+VlPWKFYDCKVU11jotL1qNuJ5SVgL3WIZR+2kHCt1Yw=="],
 
@@ -332,7 +332,7 @@
 
     "eslint-plugin-import-lite": ["eslint-plugin-import-lite@0.3.0", "", { "dependencies": { "@eslint-community/eslint-utils": "^4.7.0", "@typescript-eslint/types": "^8.34.0" }, "peerDependencies": { "eslint": ">=9.0.0", "typescript": ">=4.5" }, "optionalPeers": ["typescript"] }, "sha512-dkNBAL6jcoCsXZsQ/Tt2yXmMDoNt5NaBh/U7yvccjiK8cai6Ay+MK77bMykmqQA2bTF6lngaLCDij6MTO3KkvA=="],
 
-    "eslint-plugin-jsdoc": ["eslint-plugin-jsdoc@51.3.3", "", { "dependencies": { "@es-joy/jsdoccomment": "~0.52.0", "are-docs-informative": "^0.0.2", "comment-parser": "1.4.1", "debug": "^4.4.1", "escape-string-regexp": "^4.0.0", "espree": "^10.4.0", "esquery": "^1.6.0", "parse-imports-exports": "^0.2.4", "semver": "^7.7.2", "spdx-expression-parse": "^4.0.0" }, "peerDependencies": { "eslint": "^7.0.0 || ^8.0.0 || ^9.0.0" } }, "sha512-8XK/9wncTh4PPntQfM4iYJ2v/kvX4qsfBzp+dTnyxpERWhl2R9hEJw1ihws+yAecg9CC6ExTfMInEg3wSK9kWA=="],
+    "eslint-plugin-jsdoc": ["eslint-plugin-jsdoc@51.3.4", "", { "dependencies": { "@es-joy/jsdoccomment": "~0.52.0", "are-docs-informative": "^0.0.2", "comment-parser": "1.4.1", "debug": "^4.4.1", "escape-string-regexp": "^4.0.0", "espree": "^10.4.0", "esquery": "^1.6.0", "parse-imports-exports": "^0.2.4", "semver": "^7.7.2", "spdx-expression-parse": "^4.0.0" }, "peerDependencies": { "eslint": "^7.0.0 || ^8.0.0 || ^9.0.0" } }, "sha512-maz6qa95+sAjMr9m5oRyfejc+mnyQWsWSe9oyv9371bh4/T0kWOMryJNO4h8rEd97wo/9lbzwi3OOX4rDhnAzg=="],
 
     "eslint-plugin-jsonc": ["eslint-plugin-jsonc@2.20.1", "", { "dependencies": { "@eslint-community/eslint-utils": "^4.5.1", "eslint-compat-utils": "^0.6.4", "eslint-json-compat-utils": "^0.2.1", "espree": "^9.6.1 || ^10.3.0", "graphemer": "^1.4.0", "jsonc-eslint-parser": "^2.4.0", "natural-compare": "^1.4.0", "synckit": "^0.6.2 || ^0.7.3 || ^0.11.5" }, "peerDependencies": { "eslint": ">=6.0.0" } }, "sha512-gUzIwQHXx7ZPypUoadcyRi4WbHW2TPixDr0kqQ4miuJBU0emJmyGTlnaT3Og9X2a8R1CDayN9BFSq5weGWbTng=="],
 
@@ -857,6 +857,8 @@
     "@eslint/eslintrc/globals": ["globals@14.0.0", "", {}, "sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ=="],
 
     "@humanfs/node/@humanwhocodes/retry": ["@humanwhocodes/retry@0.3.1", "", {}, "sha512-JBxkERygn7Bv/GbN5Rv8Ul6LVknS+5Bp6RgDC/O8gEBU/yeH5Ui5C/OlWrTb6qct7LjjfT6Re2NxB0ln0yYybA=="],
+
+    "@nuxt/eslint-config/eslint-plugin-jsdoc": ["eslint-plugin-jsdoc@51.3.3", "", { "dependencies": { "@es-joy/jsdoccomment": "~0.52.0", "are-docs-informative": "^0.0.2", "comment-parser": "1.4.1", "debug": "^4.4.1", "escape-string-regexp": "^4.0.0", "espree": "^10.4.0", "esquery": "^1.6.0", "parse-imports-exports": "^0.2.4", "semver": "^7.7.2", "spdx-expression-parse": "^4.0.0" }, "peerDependencies": { "eslint": "^7.0.0 || ^8.0.0 || ^9.0.0" } }, "sha512-8XK/9wncTh4PPntQfM4iYJ2v/kvX4qsfBzp+dTnyxpERWhl2R9hEJw1ihws+yAecg9CC6ExTfMInEg3wSK9kWA=="],
 
     "@typescript-eslint/eslint-plugin/ignore": ["ignore@7.0.4", "", {}, "sha512-gJzzk+PQNznz8ysRrC0aOkBNVRBDtE1n53IqyqEf3PXrYwomFs5q4pGMizBMJF+ykh03insJ27hB8gSrD2Hn8A=="],
 
