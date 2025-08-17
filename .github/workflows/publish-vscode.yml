@@ -12,7 +12,7 @@ jobs:
     name: Публикация расширения VSCode
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Настройка Bun
         uses: oven-sh/setup-bun@v2
