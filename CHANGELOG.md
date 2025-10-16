@@ -1,4 +1,20 @@
 
+## v0.9.0
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.8.0...v0.9.0)
+
+### 🚀 Улучшения
+
+- ⚠️  Настройка Trusted Publishing для `publish-npm.yml` ([#11](https://github.com/ExEr7um/workflows/pull/11))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Настройка Trusted Publishing для `publish-npm.yml` ([#11](https://github.com/ExEr7um/workflows/pull/11))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](https://github.com/ExEr7um))
+
 ## v0.8.0
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.7.3...v0.8.0)
