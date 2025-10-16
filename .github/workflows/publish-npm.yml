@@ -6,10 +6,6 @@ on:
       build:
         type: boolean
         description: Требуется ли сборка при публикации
-    secrets:
-      NPM_TOKEN:
-        required: true
-        description: Токен для авторизации в npm
 
 jobs:
   publish:
@@ -30,8 +26,6 @@ jobs:
           bun run build
 
       - name: Публикация
-        uses: JS-DevTools/npm-publish@v4
-        with:
-          access: public
-          provenance: true
-          token: ${{ secrets.NPM_TOKEN }}
+        run: |
+          bun install -g npm@latest # Установка последней версии npm для поддержки Trusted Publishing
+          npm publish
