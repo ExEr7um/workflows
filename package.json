@@ -21,7 +21,7 @@
   },
   "prettier": "@exer7um/prettier-config",
   "devDependencies": {
-    "@exer7um/eslint-config": "2.2.2",
+    "@exer7um/eslint-config": "2.2.3",
     "@exer7um/prettier-config": "0.8.0",
     "husky": "9.1.7",
     "nano-staged": "0.8.0"
