@@ -22,7 +22,7 @@
   "prettier": "@exer7um/prettier-config",
   "devDependencies": {
     "@exer7um/eslint-config": "2.2.3",
-    "@exer7um/prettier-config": "0.8.3",
+    "@exer7um/prettier-config": "0.8.5",
     "husky": "9.1.7",
     "nano-staged": "0.9.0"
   }
