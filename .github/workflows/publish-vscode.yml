@@ -17,7 +17,10 @@ jobs:
       - name: Настройка Bun
         uses: oven-sh/setup-bun@v2
 
+      - name: Установка зависимостей
+        run: bun install
+
       - name: Публикация
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
-        run: bunx @vscode/vsce@latest publish
+        run: bun run publish
