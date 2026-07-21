@@ -1,4 +1,16 @@
 
+## v0.9.1
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.9.0...v0.9.1)
+
+### 🐞 Исправления
+
+- **publish-vscode:** Публикация установленной версией `vsce` ([#53](https://github.com/ExEr7um/workflows/pull/53))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](https://github.com/ExEr7um))
+
 ## v0.9.0
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.8.0...v0.9.0)
