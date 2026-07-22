@@ -6,6 +6,9 @@ on:
       VSCE_PAT:
         required: true
         description: Токен для авторизации в VSCode Marketplace
+      OVSX_PAT:
+        required: true
+        description: Токен для авторизации в Open VSX
 
 jobs:
   publish:
@@ -20,7 +23,12 @@ jobs:
       - name: Установка зависимостей
         run: bun install
 
-      - name: Публикация
+      - name: Публикация в VSCode Marketplace
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: bun run publish
+
+      - name: Публикация в Open VSX
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: bun run publish:ovsx
