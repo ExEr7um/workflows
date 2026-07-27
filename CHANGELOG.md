@@ -1,4 +1,16 @@
 
+## v0.10.0
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.9.1...v0.10.0)
+
+### 🚀 Улучшения
+
+- **publish-vscode:** Публикация в Open VSX ([#54](https://github.com/ExEr7um/workflows/pull/54))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](https://github.com/ExEr7um))
+
 ## v0.9.1
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.9.0...v0.9.1)
