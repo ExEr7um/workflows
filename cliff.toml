@@ -1,0 +1,35 @@
+[changelog]
+body = """
+{% for group, commits in commits | group_by(attribute="group") %}
+    ### {{ group | striptags }}
+    {% if commits | length > commits | filter(attribute="scope") | length %}\
+        {% for commit in commits %}\
+            {% if not commit.scope %}
+                - {{ commit.message | upper_first }}\
+            {% endif %}\
+        {% endfor %}
+    {% endif %}\
+    {% for scope, scoped in commits | group_by(attribute="scope") %}
+        #### {{ scope }}
+        {% for commit in scoped %}
+            - {{ commit.message | upper_first }}\
+        {% endfor %}
+    {% endfor %}\
+{% endfor %}\n
+"""
+
+[git]
+commit_parsers = [
+  { message = "^chore\\(release\\)", skip = true },
+  { message = "^chore\\(deps.*\\)", skip = true },
+  { message = "^feat", group = "<!-- 0 -->🚀 Что нового" },
+  { message = "^fix", group = "<!-- 1 -->🐛 Исправления" },
+  { message = "^refactor", group = "<!-- 2 -->🚜 Рефактор кода" },
+  { message = "^docs", group = "<!-- 3 -->📖 Документация" },
+  { message = "^perf", group = "<!-- 4 -->⚡ Производительность" },
+  { message = "^test", group = "<!-- 5 -->🧪 Тестирование" },
+  { message = ".*", group = "<!-- 6 -->⚙️ Прочие задачи" },
+]
+
+[bump]
+initial_tag = "v0.1.0"
