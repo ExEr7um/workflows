@@ -1,4 +1,16 @@
 
+## v0.11.0
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.10.0...v0.11.0)
+
+### 🚀 Улучшения
+
+- Workflow релиза на `git-cliff` ([#56](https://github.com/ExEr7um/workflows/pull/56))
+
+### ❤️ Contributors
+
+- Vasily Kuzin <work@exer7um.com>
+
 ## v0.10.0
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.9.1...v0.10.0)
