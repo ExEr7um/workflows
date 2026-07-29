@@ -1,0 +1,61 @@
+name: Релиз GitHub через git-cliff
+
+on:
+  workflow_call:
+    inputs:
+      updateType:
+        description: Тип релиза
+        required: true
+        type: string
+      versionCommand:
+        description: Команда, записывающая версию в файлы проекта. Доступна переменная `VERSION` вида `v1.2.3`
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Релиз GitHub
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Конфигурация пользователя
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Создание тела релиза
+        id: release
+        uses: orhun/git-cliff-action@v4.8.0
+        with:
+          args: --config-url https://raw.githubusercontent.com/ExEr7um/workflows/main/cliff.toml --bump ${{ inputs.updateType }} --unreleased --strip all --output ${{ runner.temp }}/release-notes.md
+
+      - name: Обновление версии проекта
+        if: inputs.versionCommand != ''
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+          VERSION_COMMAND: ${{ inputs.versionCommand }}
+        run: bash -c "$VERSION_COMMAND"
+
+      - name: Отправка изменений
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          if ! git diff --quiet; then
+            git commit -a -m "chore(release): \`$VERSION\`"
+          fi
+
+          git tag -a "$VERSION" -m "$VERSION"
+          git push origin "HEAD:$GITHUB_REF_NAME" --follow-tags
+
+      - name: Создание релиза на GitHub
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: gh release create "$VERSION" --title "$VERSION" --notes-file "$RUNNER_TEMP/release-notes.md"
