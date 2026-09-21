@@ -32,7 +32,7 @@ jobs:
 
       - name: Создание тела релиза
         id: release
-        uses: orhun/git-cliff-action@v4.8.0
+        uses: orhun/git-cliff-action@v4.9.1
         with:
           args: --config-url https://raw.githubusercontent.com/ExEr7um/workflows/main/cliff.toml --bump ${{ inputs.updateType }} --unreleased --strip all --output ${{ runner.temp }}/release-notes.md
 
