@@ -1,0 +1,18 @@
+name: Vite+
+
+on: workflow_call
+
+jobs:
+  check:
+    name: Vite+ check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Настройка Vite+ и установка зависимостей
+        uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          cache: true
+
+      - name: Проверка
+        run: vp check
