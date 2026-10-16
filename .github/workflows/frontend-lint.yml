@@ -3,6 +3,10 @@ name: Линт
 on:
   workflow_call:
     inputs:
+      eslint:
+        type: boolean
+        default: true
+        description: Требуется ли проверка ESLint
       prettier:
         type: boolean
         default: true
@@ -11,6 +15,7 @@ on:
 jobs:
   eslint:
     name: ESLint
+    if: inputs.eslint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
