@@ -1,4 +1,16 @@
 
+## v0.12.1
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.12.0...v0.12.1)
+
+### 🚀 Улучшения
+
+- **frontend-lint:** Параметры для отключения ESLint и Prettier ([#63](https://github.com/ExEr7um/workflows/pull/63))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](https://github.com/ExEr7um))
+
 ## v0.12.0
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.11.0...v0.12.0)
