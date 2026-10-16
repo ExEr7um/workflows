@@ -1,6 +1,12 @@
 name: Линт
 
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      prettier:
+        type: boolean
+        default: true
+        description: Требуется ли проверка Prettier
 
 jobs:
   eslint:
@@ -20,6 +26,7 @@ jobs:
 
   prettier:
     name: Prettier
+    if: inputs.prettier
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
