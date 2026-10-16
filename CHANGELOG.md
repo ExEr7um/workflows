@@ -1,4 +1,16 @@
 
+## v0.12.0
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.11.0...v0.12.0)
+
+### 🚀 Улучшения
+
+- Workflow проверки через Vite+ ([#62](https://github.com/ExEr7um/workflows/pull/62))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](https://github.com/ExEr7um))
+
 ## v0.11.0
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.10.0...v0.11.0)
