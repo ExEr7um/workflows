@@ -1,6 +1,12 @@
 name: Vite+
 
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      cache-save:
+        type: boolean
+        default: true
+        description: Требуется ли сохранение кеша зависимостей и тулчейна
 
 jobs:
   check:
@@ -13,6 +19,8 @@ jobs:
         uses: voidzero-dev/setup-vp@v1.22.0
         with:
           cache: true
+          cache-toolchain: true
+          cache-save: ${{ inputs.cache-save }}
 
       - name: Проверка
         run: vp check
