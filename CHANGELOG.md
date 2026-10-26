@@ -1,4 +1,16 @@
 
+## v0.12.2
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.12.1...v0.12.2)
+
+### 🚀 Улучшения
+
+- **frontend-vp-check:** Кеширование тулчейна Vite+ ([#67](https://github.com/ExEr7um/workflows/pull/67))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](https://github.com/ExEr7um))
+
 ## v0.12.1
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.12.0...v0.12.1)
