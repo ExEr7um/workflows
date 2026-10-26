@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Настройка Vite+ и установка зависимостей
-        uses: voidzero-dev/setup-vp@v1.21.2
+        uses: voidzero-dev/setup-vp@v1.22.0
         with:
           cache: true
 
