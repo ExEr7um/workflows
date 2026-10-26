@@ -13,6 +13,7 @@ jobs:
         uses: voidzero-dev/setup-vp@v1.22.0
         with:
           cache: true
+          cache-toolchain: true
 
       - name: Проверка
         run: vp check
