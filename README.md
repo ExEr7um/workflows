@@ -39,7 +39,7 @@ jobs:
       runner: self-hosted
 ```
 
-`publish-npm` всегда выполняется на GitHub-hosted раннере: Trusted Publishing в npm не поддерживает self-hosted раннеры.
+`publish-npm` и `publish-vscode` всегда выполняются на GitHub-hosted раннере: Trusted Publishing в npm не поддерживает self-hosted раннеры, а публичным репозиториям, из которых публикуются расширения, self-hosted раннеры давать небезопасно.
 
 ## Создание новых `workflow`
 
