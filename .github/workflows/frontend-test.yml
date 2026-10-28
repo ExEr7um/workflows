@@ -1,11 +1,17 @@
 name: Тестирование
 
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      runner:
+        type: string
+        default: ubuntu-latest
+        description: Метка раннера, на котором выполняются задачи, например `self-hosted`
 
 jobs:
   test:
     name: Тестирование
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v7
 

@@ -2,6 +2,11 @@ name: Публикация расширения VSCode
 
 on:
   workflow_call:
+    inputs:
+      runner:
+        type: string
+        default: ubuntu-latest
+        description: Метка раннера, на котором выполняются задачи, например `self-hosted`
     secrets:
       VSCE_PAT:
         required: true
@@ -13,7 +18,7 @@ on:
 jobs:
   publish:
     name: Публикация расширения VSCode
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v7
 
