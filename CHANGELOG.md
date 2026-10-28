@@ -1,4 +1,16 @@
 
+## v0.13.0
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.12.2...v0.13.0)
+
+### 🚀 Улучшения
+
+- Выбор раннера через параметр `runner` ([#68](https://github.com/ExEr7um/workflows/pull/68))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](https://github.com/ExEr7um))
+
 ## v0.12.2
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.12.1...v0.12.2)
