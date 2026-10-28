@@ -17,9 +17,10 @@ jobs:
 
       - name: Настройка Vite+ и установка зависимостей
         uses: voidzero-dev/setup-vp@v1.22.0
+        # На self-hosted раннере зависимости и тулчейн и так остаются на диске
         with:
-          cache: true
-          cache-toolchain: true
+          cache: ${{ runner.environment == 'github-hosted' }}
+          cache-toolchain: ${{ runner.environment == 'github-hosted' }}
 
       - name: Проверка
         run: vp check
