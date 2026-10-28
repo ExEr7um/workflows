@@ -1,4 +1,16 @@
 
+## v0.13.1
+
+[compare changes](https://github.com/ExEr7um/workflows/compare/v0.13.0...v0.13.1)
+
+### 🔥 Производительность
+
+- **frontend-vp-check:** Кеш GitHub только на GitHub-hosted раннерах ([#69](https://github.com/ExEr7um/workflows/pull/69))
+
+### ❤️ Contributors
+
+- Vasily Kuzin ([@ExEr7um](https://github.com/ExEr7um))
+
 ## v0.13.0
 
 [compare changes](https://github.com/ExEr7um/workflows/compare/v0.12.2...v0.13.0)
