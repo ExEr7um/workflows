@@ -27,6 +27,20 @@ jobs:
     uses: ExEr7um/workflows/.github/workflows/build.yml@v0.1.0
 ```
 
+### Выбор раннера
+
+По умолчанию задачи выполняются на GitHub-hosted раннере `ubuntu-latest`. Чтобы запустить их на другом раннере, например self-hosted, передаем его метку в `runner`:
+
+```yml
+jobs:
+  build:
+    uses: ExEr7um/workflows/.github/workflows/frontend-build.yml@v0.13.0
+    with:
+      runner: self-hosted
+```
+
+`publish-npm` и `publish-vscode` всегда выполняются на GitHub-hosted раннере: Trusted Publishing в npm не поддерживает self-hosted раннеры, а публичным репозиториям, из которых публикуются расширения, self-hosted раннеры давать небезопасно.
+
 ## Создание новых `workflow`
 
 Создавать новый `workflow` необходимо в папке `.github/workflows`, вложенные папки не поддерживаются. Перед файлом необходимо указать префикс, если он относится только к части репозиториев, например `frontend-build.yml` или `backend-black.yml`.

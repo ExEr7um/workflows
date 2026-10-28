@@ -6,11 +6,15 @@ on:
       installDevDependencies:
         type: boolean
         description: Требуется ли установка devDependencies
+      runner:
+        type: string
+        default: ubuntu-latest
+        description: Метка раннера, на котором выполняются задачи, например `self-hosted`
 
 jobs:
   build:
     name: Сборка проекта
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v7
 
