@@ -27,9 +27,7 @@ jobs:
       contents: read
       pull-requests: write
     env:
-      UPDATE: ${{ github.event.action == 'labeled' && github.event.label.name == 'update-screenshots' }}
-    outputs:
-      changed: ${{ steps.changes.outputs.changed }}
+      UPDATE: ${{ github.event.label.name == 'update-screenshots' }}
     steps:
       - name: Снятие метки
         if: env.UPDATE == 'true'
@@ -62,56 +60,80 @@ jobs:
             "mcr.microsoft.com/playwright:v$PLAYWRIGHT_VERSION-noble" \
             bun run test:visual --run ${{ env.UPDATE == 'true' && '--update' || '' }}
 
-      - name: Загрузка отличий
+      - name: Отчет об отличиях
+        if: failure() && env.UPDATE != 'true'
+        run: |
+          bun run - <<'EOF'
+          const root = ".vitest/attachments"
+          const pattern = /^(.+)\/([^/]+)\/(.+)-(actual|reference)-([^-]+-[^-]+\.png)$/
+
+          async function figure(caption: string, path: string) {
+            const file = Bun.file(path)
+            if (!(await file.exists())) return ""
+            const src = `data:image/png;base64,${Buffer.from(await file.arrayBuffer()).toString("base64")}`
+            return `<figure><figcaption>${caption}</figcaption><img src="${src}"></figure>`
+          }
+
+          let sections = ""
+          for await (const path of new Bun.Glob("**/*-{actual,reference}-*.png").scan(root)) {
+            const [, dir, file, name, kind, suffix] = path.match(pattern) ?? []
+            if (!kind) continue
+            const figures =
+              kind === "reference"
+                ? [await figure("Новый скриншот, эталона нет", `${root}/${path}`)]
+                : await Promise.all([
+                    figure("Эталон", `${dir}/__screenshots__/${file}/${name}-${suffix}`),
+                    figure("Сейчас", `${root}/${path}`),
+                    figure("Отличия", `${root}/${dir}/${file}/${name}-diff-${suffix}`),
+                  ])
+            sections += `<section><h2>${dir}/${file} › ${name}</h2><div>${figures.join("")}</div></section>`
+          }
+
+          await Bun.write(
+            "screenshots-diff.html",
+            `<!doctype html><meta charset="utf-8"><title>Отличия скриншотов</title><style>
+            body { font: 14px system-ui; margin: 24px; background: #f4f4f5 }
+            div { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start }
+            figure { margin: 0; padding: 8px; background: #fff; border: 1px solid #e4e4e7 }
+            figcaption { margin-bottom: 8px; color: #71717a }
+            img { display: block; max-width: 100% }
+            </style>${sections}`,
+          )
+          EOF
+
+          echo "Эталон, текущий скриншот и отличия для каждой истории — в артефакте \`screenshots-diff.html\` внизу страницы." >> "$GITHUB_STEP_SUMMARY"
+          echo "Если внешний вид изменился намеренно, повесьте на PR метку \`update-screenshots\`: эталоны обновятся и закоммитятся в ветку." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Загрузка отчета
         if: failure() && env.UPDATE != 'true'
         uses: actions/upload-artifact@v7
         with:
-          name: screenshots-diff
-          path: .vitest/attachments
+          path: screenshots-diff.html
+          archive: false
           if-no-files-found: ignore
 
-      - name: Подсказка
-        if: failure() && env.UPDATE != 'true'
-        run: |
-          echo "Отличия от эталонов лежат в артефакте \`screenshots-diff\`." >> "$GITHUB_STEP_SUMMARY"
-          echo "Если внешний вид изменился намеренно, повесьте на PR метку \`update-screenshots\`: эталоны обновятся и закоммитятся в ветку." >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Сбор эталонов
-        id: changes
-        if: env.UPDATE == 'true'
-        run: |
-          git add --all -- ':(glob)**/__screenshots__/**'
-          if git diff --cached --quiet; then
-            echo "Скриншоты совпадают с эталонами, обновлять нечего." >> "$GITHUB_STEP_SUMMARY"
-          else
-            git diff --cached --name-only --diff-filter=d -z \
-              | tar --create --file "$RUNNER_TEMP/screenshots.tar" --null --files-from -
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Загрузка эталонов
-        if: steps.changes.outputs.changed == 'true'
+        if: env.UPDATE == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: screenshots
-          path: ${{ runner.temp }}/screenshots.tar
+          path: |
+            **/__screenshots__/**
+            !node_modules/**
           retention-days: 1
 
   # Отдельная задача, чтобы токен с правом пуша не попадал туда, где выполняется код из PR
   commit:
     name: Коммит эталонов
     needs: test
-    if: needs.test.outputs.changed == 'true'
+    if: github.event.label.name == 'update-screenshots'
     runs-on: ${{ inputs.runner }}
     permissions:
       contents: write
-    env:
-      APP: ${{ inputs.botClientId != '' && secrets.BOT_PRIVATE_KEY != '' }}
-      PAT: ${{ secrets.PUSH_TOKEN != '' }}
     steps:
       - name: Токен GitHub App
         id: app-token
-        if: env.APP == 'true'
+        if: inputs.botClientId != ''
         uses: actions/create-github-app-token@v3
         with:
           client-id: ${{ inputs.botClientId }}
@@ -128,22 +150,21 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: screenshots
-          path: ${{ runner.temp }}
 
       - name: Коммит
         env:
           BRANCH: ${{ github.head_ref }}
         run: |
-          tar --extract --file "$RUNNER_TEMP/screenshots.tar"
+          git add --all -- ':(glob)**/__screenshots__/**'
+          if git diff --cached --quiet; then
+            echo "Скриншоты совпадают с эталонами, обновлять нечего." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add --all -- ':(glob)**/__screenshots__/**'
           git commit --message "test: Обновление эталонов скриншотов"
           if ! git push origin "HEAD:refs/heads/$BRANCH"; then
             echo "::error::Пока обновлялись эталоны, в ветку запушили новые коммиты. Повесьте метку еще раз."
             exit 1
           fi
-
-      - name: Предупреждение о проверках
-        if: env.APP != 'true' && env.PAT != 'true'
-        run: echo "::warning::Эталоны запушены через \`GITHUB_TOKEN\`, поэтому проверки PR на этом коммите не запустятся. Передайте \`botClientId\` с секретом \`BOT_PRIVATE_KEY\` или секрет \`PUSH_TOKEN\`."
