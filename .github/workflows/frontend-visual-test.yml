@@ -1,0 +1,167 @@
+name: Визуальные тесты
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        type: string
+        default: ubuntu-latest
+        description: Метка раннера, на котором выполняются задачи, например `self-hosted`. На раннере нужен Docker
+      script:
+        type: string
+        default: test:visual
+        description: Скрипт из `package.json`, запускающий визуальные тесты Vitest
+      update-label:
+        type: string
+        default: update-screenshots
+        description: Метка PR, по которой эталоны скриншотов обновляются и коммитятся в ветку PR
+      bot-client-id:
+        type: string
+        default: ""
+        description: Client ID GitHub App, от имени которой пушатся эталоны. Ее ключ передается секретом `BOT_PRIVATE_KEY`
+      commit-message:
+        type: string
+        default: "test: Обновление эталонов скриншотов"
+        description: Сообщение коммита с эталонами
+    secrets:
+      BOT_PRIVATE_KEY:
+        required: false
+        description: Приватный ключ GitHub App из `bot-client-id`
+      PUSH_TOKEN:
+        required: false
+        description: Personal access token для пуша эталонов, если GitHub App нет
+
+jobs:
+  test:
+    name: Визуальные тесты
+    runs-on: ${{ inputs.runner }}
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      UPDATE: ${{ github.event.action == 'labeled' && github.event.label.name == inputs.update-label }}
+    outputs:
+      changed: ${{ steps.changes.outputs.changed }}
+    steps:
+      - name: Снятие метки
+        if: env.UPDATE == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          LABEL: ${{ inputs.update-label }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          curl --fail --silent --show-error --output /dev/null --request DELETE \
+            --header "Authorization: Bearer $GITHUB_TOKEN" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues/$PR/labels/$LABEL"
+
+      - uses: actions/checkout@v7
+
+      - name: Настройка Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Установка зависимостей
+        run: bun install
+
+      # Рендеринг зависит от шрифтов и библиотек ОС, поэтому браузер берется из образа Playwright версии проекта.
+      # Без `--user` файлы в рабочей папке self-hosted раннера остались бы у root
+      - name: Тестирование
+        env:
+          SCRIPT: ${{ inputs.script }}
+        run: |
+          PLAYWRIGHT_VERSION=$(bun --print 'require("playwright-core/package.json").version')
+          docker run --rm --init --ipc=host \
+            --user "$(id -u):$(id -g)" \
+            --env CI --env GITHUB_ACTIONS --env HOME=/tmp \
+            --volume "$(realpath "$(command -v bun)"):/usr/local/bin/bun:ro" \
+            --volume "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" --workdir "$GITHUB_WORKSPACE" \
+            "mcr.microsoft.com/playwright:v$PLAYWRIGHT_VERSION-noble" \
+            bun run "$SCRIPT" --run ${{ env.UPDATE == 'true' && '--update' || '' }}
+
+      - name: Загрузка отличий
+        if: failure() && env.UPDATE != 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: screenshots-diff
+          path: .vitest/attachments
+          if-no-files-found: ignore
+
+      - name: Подсказка
+        if: failure() && env.UPDATE != 'true'
+        env:
+          LABEL: ${{ inputs.update-label }}
+        run: |
+          echo "Отличия от эталонов лежат в артефакте \`screenshots-diff\`." >> "$GITHUB_STEP_SUMMARY"
+          echo "Если внешний вид изменился намеренно, повесьте на PR метку \`$LABEL\`: эталоны обновятся и закоммитятся в ветку." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Сбор эталонов
+        id: changes
+        if: env.UPDATE == 'true'
+        run: |
+          git add --all -- ':(glob)**/__screenshots__/**'
+          if git diff --cached --quiet; then
+            echo "Скриншоты совпадают с эталонами, обновлять нечего." >> "$GITHUB_STEP_SUMMARY"
+          else
+            git diff --cached --name-only --diff-filter=d -z \
+              | tar --create --file "$RUNNER_TEMP/screenshots.tar" --null --files-from -
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Загрузка эталонов
+        if: steps.changes.outputs.changed == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: screenshots
+          path: ${{ runner.temp }}/screenshots.tar
+          retention-days: 1
+
+  # Отдельная задача, чтобы токен с правом пуша не попадал туда, где выполняется код из PR
+  commit:
+    name: Коммит эталонов
+    needs: test
+    if: needs.test.outputs.changed == 'true'
+    runs-on: ${{ inputs.runner }}
+    permissions:
+      contents: write
+    env:
+      APP: ${{ inputs.bot-client-id != '' && secrets.BOT_PRIVATE_KEY != '' }}
+      PAT: ${{ secrets.PUSH_TOKEN != '' }}
+    steps:
+      - name: Токен GitHub App
+        id: app-token
+        if: env.APP == 'true'
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ inputs.bot-client-id }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+          permission-contents: write
+
+      # Пуш через `GITHUB_TOKEN` не запускает workflow, и проверки PR на коммите с эталонами не появятся
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          token: ${{ steps.app-token.outputs.token || secrets.PUSH_TOKEN || github.token }}
+
+      - name: Загрузка эталонов
+        uses: actions/download-artifact@v8
+        with:
+          name: screenshots
+          path: ${{ runner.temp }}
+
+      - name: Коммит
+        env:
+          BRANCH: ${{ github.head_ref }}
+          MESSAGE: ${{ inputs.commit-message }}
+        run: |
+          tar --extract --file "$RUNNER_TEMP/screenshots.tar"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add --all -- ':(glob)**/__screenshots__/**'
+          git commit --message "$MESSAGE"
+          if ! git push origin "HEAD:refs/heads/$BRANCH"; then
+            echo "::error::Пока обновлялись эталоны, в ветку запушили новые коммиты. Повесьте метку еще раз."
+            exit 1
+          fi
+
+      - name: Предупреждение о проверках
+        if: env.APP != 'true' && env.PAT != 'true'
+        run: echo "::warning::Эталоны запушены через \`GITHUB_TOKEN\`, поэтому проверки PR на этом коммите не запустятся. Передайте \`bot-client-id\` с секретом \`BOT_PRIVATE_KEY\` или секрет \`PUSH_TOKEN\`."
