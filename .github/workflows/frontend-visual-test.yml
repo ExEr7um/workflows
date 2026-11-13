@@ -7,26 +7,14 @@ on:
         type: string
         default: ubuntu-latest
         description: Метка раннера, на котором выполняются задачи, например `self-hosted`. На раннере нужен Docker
-      script:
-        type: string
-        default: test:visual
-        description: Скрипт из `package.json`, запускающий визуальные тесты Vitest
-      update-label:
-        type: string
-        default: update-screenshots
-        description: Метка PR, по которой эталоны скриншотов обновляются и коммитятся в ветку PR
-      bot-client-id:
+      botClientId:
         type: string
         default: ""
         description: Client ID GitHub App, от имени которой пушатся эталоны. Ее ключ передается секретом `BOT_PRIVATE_KEY`
-      commit-message:
-        type: string
-        default: "test: Обновление эталонов скриншотов"
-        description: Сообщение коммита с эталонами
     secrets:
       BOT_PRIVATE_KEY:
         required: false
-        description: Приватный ключ GitHub App из `bot-client-id`
+        description: Приватный ключ GitHub App из `botClientId`
       PUSH_TOKEN:
         required: false
         description: Personal access token для пуша эталонов, если GitHub App нет
@@ -39,7 +27,7 @@ jobs:
       contents: read
       pull-requests: write
     env:
-      UPDATE: ${{ github.event.action == 'labeled' && github.event.label.name == inputs.update-label }}
+      UPDATE: ${{ github.event.action == 'labeled' && github.event.label.name == 'update-screenshots' }}
     outputs:
       changed: ${{ steps.changes.outputs.changed }}
     steps:
@@ -47,12 +35,11 @@ jobs:
         if: env.UPDATE == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          LABEL: ${{ inputs.update-label }}
           PR: ${{ github.event.pull_request.number }}
         run: |
           curl --fail --silent --show-error --output /dev/null --request DELETE \
             --header "Authorization: Bearer $GITHUB_TOKEN" \
-            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues/$PR/labels/$LABEL"
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues/$PR/labels/update-screenshots"
 
       - uses: actions/checkout@v7
 
@@ -65,8 +52,6 @@ jobs:
       # Рендеринг зависит от шрифтов и библиотек ОС, поэтому браузер берется из образа Playwright версии проекта.
       # Без `--user` файлы в рабочей папке self-hosted раннера остались бы у root
       - name: Тестирование
-        env:
-          SCRIPT: ${{ inputs.script }}
         run: |
           PLAYWRIGHT_VERSION=$(bun --print 'require("playwright-core/package.json").version')
           docker run --rm --init --ipc=host \
@@ -75,7 +60,7 @@ jobs:
             --volume "$(realpath "$(command -v bun)"):/usr/local/bin/bun:ro" \
             --volume "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" --workdir "$GITHUB_WORKSPACE" \
             "mcr.microsoft.com/playwright:v$PLAYWRIGHT_VERSION-noble" \
-            bun run "$SCRIPT" --run ${{ env.UPDATE == 'true' && '--update' || '' }}
+            bun run test:visual --run ${{ env.UPDATE == 'true' && '--update' || '' }}
 
       - name: Загрузка отличий
         if: failure() && env.UPDATE != 'true'
@@ -87,11 +72,9 @@ jobs:
 
       - name: Подсказка
         if: failure() && env.UPDATE != 'true'
-        env:
-          LABEL: ${{ inputs.update-label }}
         run: |
           echo "Отличия от эталонов лежат в артефакте \`screenshots-diff\`." >> "$GITHUB_STEP_SUMMARY"
-          echo "Если внешний вид изменился намеренно, повесьте на PR метку \`$LABEL\`: эталоны обновятся и закоммитятся в ветку." >> "$GITHUB_STEP_SUMMARY"
+          echo "Если внешний вид изменился намеренно, повесьте на PR метку \`update-screenshots\`: эталоны обновятся и закоммитятся в ветку." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Сбор эталонов
         id: changes
@@ -123,7 +106,7 @@ jobs:
     permissions:
       contents: write
     env:
-      APP: ${{ inputs.bot-client-id != '' && secrets.BOT_PRIVATE_KEY != '' }}
+      APP: ${{ inputs.botClientId != '' && secrets.BOT_PRIVATE_KEY != '' }}
       PAT: ${{ secrets.PUSH_TOKEN != '' }}
     steps:
       - name: Токен GitHub App
@@ -131,7 +114,7 @@ jobs:
         if: env.APP == 'true'
         uses: actions/create-github-app-token@v3
         with:
-          client-id: ${{ inputs.bot-client-id }}
+          client-id: ${{ inputs.botClientId }}
           private-key: ${{ secrets.BOT_PRIVATE_KEY }}
           permission-contents: write
 
@@ -150,13 +133,12 @@ jobs:
       - name: Коммит
         env:
           BRANCH: ${{ github.head_ref }}
-          MESSAGE: ${{ inputs.commit-message }}
         run: |
           tar --extract --file "$RUNNER_TEMP/screenshots.tar"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add --all -- ':(glob)**/__screenshots__/**'
-          git commit --message "$MESSAGE"
+          git commit --message "test: Обновление эталонов скриншотов"
           if ! git push origin "HEAD:refs/heads/$BRANCH"; then
             echo "::error::Пока обновлялись эталоны, в ветку запушили новые коммиты. Повесьте метку еще раз."
             exit 1
@@ -164,4 +146,4 @@ jobs:
 
       - name: Предупреждение о проверках
         if: env.APP != 'true' && env.PAT != 'true'
-        run: echo "::warning::Эталоны запушены через \`GITHUB_TOKEN\`, поэтому проверки PR на этом коммите не запустятся. Передайте \`bot-client-id\` с секретом \`BOT_PRIVATE_KEY\` или секрет \`PUSH_TOKEN\`."
+        run: echo "::warning::Эталоны запушены через \`GITHUB_TOKEN\`, поэтому проверки PR на этом коммите не запустятся. Передайте \`botClientId\` с секретом \`BOT_PRIVATE_KEY\` или секрет \`PUSH_TOKEN\`."
