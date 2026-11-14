@@ -24,7 +24,7 @@ jobs:
     name: Визуальные тесты
     runs-on: ${{ inputs.runner }}
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
     env:
       UPDATE: ${{ github.event.label.name == 'update-screenshots' }}
@@ -39,101 +39,9 @@ jobs:
             --header "Authorization: Bearer $GITHUB_TOKEN" \
             "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues/$PR/labels/update-screenshots"
 
-      - uses: actions/checkout@v7
-
-      - name: Настройка Bun
-        uses: oven-sh/setup-bun@v2
-
-      - name: Установка зависимостей
-        run: bun install
-
-      # Рендеринг зависит от шрифтов и библиотек ОС, поэтому браузер берется из образа Playwright версии проекта.
-      # Без `--user` файлы в рабочей папке self-hosted раннера остались бы у root
-      - name: Тестирование
-        run: |
-          PLAYWRIGHT_VERSION=$(bun --print 'require("playwright-core/package.json").version')
-          docker run --rm --init --ipc=host \
-            --user "$(id -u):$(id -g)" \
-            --env CI --env GITHUB_ACTIONS --env HOME=/tmp \
-            --volume "$(realpath "$(command -v bun)"):/usr/local/bin/bun:ro" \
-            --volume "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" --workdir "$GITHUB_WORKSPACE" \
-            "mcr.microsoft.com/playwright:v$PLAYWRIGHT_VERSION-noble" \
-            bun run test:visual --run ${{ env.UPDATE == 'true' && '--update' || '' }}
-
-      - name: Отчет об отличиях
-        if: failure() && env.UPDATE != 'true'
-        run: |
-          bun run - <<'EOF'
-          const root = ".vitest/attachments"
-          const pattern = /^(.+)\/([^/]+)\/(.+)-(actual|reference)-([^-]+-[^-]+\.png)$/
-
-          async function figure(caption: string, path: string) {
-            const file = Bun.file(path)
-            if (!(await file.exists())) return ""
-            const src = `data:image/png;base64,${Buffer.from(await file.arrayBuffer()).toString("base64")}`
-            return `<figure><figcaption>${caption}</figcaption><img src="${src}"></figure>`
-          }
-
-          let sections = ""
-          for await (const path of new Bun.Glob("**/*-{actual,reference}-*.png").scan(root)) {
-            const [, dir, file, name, kind, suffix] = path.match(pattern) ?? []
-            if (!kind) continue
-            const figures =
-              kind === "reference"
-                ? [await figure("Новый скриншот, эталона нет", `${root}/${path}`)]
-                : await Promise.all([
-                    figure("Эталон", `${dir}/__screenshots__/${file}/${name}-${suffix}`),
-                    figure("Сейчас", `${root}/${path}`),
-                    figure("Отличия", `${root}/${dir}/${file}/${name}-diff-${suffix}`),
-                  ])
-            sections += `<section><h2>${dir}/${file} › ${name}</h2><div>${figures.join("")}</div></section>`
-          }
-
-          await Bun.write(
-            "screenshots-diff.html",
-            `<!doctype html><meta charset="utf-8"><title>Отличия скриншотов</title><style>
-            body { font: 14px system-ui; margin: 24px; background: #f4f4f5 }
-            div { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start }
-            figure { margin: 0; padding: 8px; background: #fff; border: 1px solid #e4e4e7 }
-            figcaption { margin-bottom: 8px; color: #71717a }
-            img { display: block; max-width: 100% }
-            </style>${sections}`,
-          )
-          EOF
-
-          echo "Эталон, текущий скриншот и отличия для каждой истории — в артефакте \`screenshots-diff.html\` внизу страницы." >> "$GITHUB_STEP_SUMMARY"
-          echo "Если внешний вид изменился намеренно, повесьте на PR метку \`update-screenshots\`: эталоны обновятся и закоммитятся в ветку." >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Загрузка отчета
-        if: failure() && env.UPDATE != 'true'
-        uses: actions/upload-artifact@v7
-        with:
-          path: screenshots-diff.html
-          archive: false
-          if-no-files-found: ignore
-
-      - name: Загрузка эталонов
-        if: env.UPDATE == 'true'
-        uses: actions/upload-artifact@v7
-        with:
-          name: screenshots
-          path: |
-            **/__screenshots__/**
-            !node_modules/**
-          retention-days: 1
-
-  # Отдельная задача, чтобы токен с правом пуша не попадал туда, где выполняется код из PR
-  commit:
-    name: Коммит эталонов
-    needs: test
-    if: github.event.label.name == 'update-screenshots'
-    runs-on: ${{ inputs.runner }}
-    permissions:
-      contents: write
-    steps:
       - name: Токен GitHub App
         id: app-token
-        if: inputs.botClientId != ''
+        if: env.UPDATE == 'true' && inputs.botClientId != ''
         uses: actions/create-github-app-token@v3
         with:
           client-id: ${{ inputs.botClientId }}
@@ -146,25 +54,75 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           token: ${{ steps.app-token.outputs.token || secrets.PUSH_TOKEN || github.token }}
 
-      - name: Загрузка эталонов
-        uses: actions/download-artifact@v8
-        with:
-          name: screenshots
+      - name: Настройка Bun
+        uses: oven-sh/setup-bun@v2
 
-      - name: Коммит
+      - name: Установка зависимостей
+        run: bun install
+
+      # Рендеринг зависит от шрифтов и библиотек ОС, поэтому браузер берется из образа Playwright версии проекта.
+      # Без `--user` файлы в рабочей папке self-hosted раннера остались бы у root
+      - name: Тестирование
+        id: test
+        run: |
+          PLAYWRIGHT_VERSION=$(bun --print 'require("playwright-core/package.json").version')
+          docker run --rm --init --ipc=host \
+            --user "$(id -u):$(id -g)" \
+            --env CI --env GITHUB_ACTIONS --env HOME=/tmp \
+            --volume "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" --workdir "$GITHUB_WORKSPACE" \
+            "mcr.microsoft.com/playwright:v$PLAYWRIGHT_VERSION-noble" \
+            npm run test:visual -- --run ${{ env.UPDATE == 'true' && '--update' || '' }}
+
+      - name: Загрузка отчета
+        id: report
+        if: failure() && env.UPDATE != 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          path: .vitest/index.html
+          archive: false
+
+      # Старый комментарий удаляется, а не правится, чтобы о новом падении пришло уведомление
+      - name: Комментарий в PR
+        if: ${{ !cancelled() && env.UPDATE != 'true' }}
+        env:
+          FAILED: ${{ steps.test.outcome == 'failure' }}
+          GITHUB_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPORT_URL: ${{ steps.report.outputs.artifact-url }}
+        run: |
+          bun run - <<'EOF'
+          const { FAILED, GITHUB_API_URL, GITHUB_REPOSITORY, GITHUB_TOKEN, PR, REPORT_URL } = process.env
+          const api = `${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/issues`
+          const headers = { Authorization: `Bearer ${GITHUB_TOKEN}` }
+          const marker = "<!-- visual-test -->"
+
+          const comments = await fetch(`${api}/${PR}/comments?per_page=100`, { headers }).then((response) => response.json())
+          for (const { body, id } of comments) {
+            if (body.startsWith(marker)) await fetch(`${api}/comments/${id}`, { headers, method: "DELETE" })
+          }
+
+          if (FAILED === "true") {
+            const body = `${marker}
+          **Визуальные тесты не прошли**
+
+          [Отчет](${REPORT_URL}): эталон, текущий скриншот и отличия для каждой истории.
+          Если внешний вид изменился намеренно, повесьте метку \`update-screenshots\`: эталоны обновятся и закоммитятся в ветку.`
+            await fetch(`${api}/${PR}/comments`, { body: JSON.stringify({ body }), headers, method: "POST" })
+          }
+          EOF
+
+      - name: Коммит эталонов
+        if: env.UPDATE == 'true'
         env:
           BRANCH: ${{ github.head_ref }}
         run: |
           git add --all -- ':(glob)**/__screenshots__/**'
           if git diff --cached --quiet; then
-            echo "Скриншоты совпадают с эталонами, обновлять нечего." >> "$GITHUB_STEP_SUMMARY"
+            echo "::notice::Скриншоты совпадают с эталонами, обновлять нечего"
             exit 0
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit --message "test: Обновление эталонов скриншотов"
-          if ! git push origin "HEAD:refs/heads/$BRANCH"; then
-            echo "::error::Пока обновлялись эталоны, в ветку запушили новые коммиты. Повесьте метку еще раз."
-            exit 1
-          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit --message "test: Обновление эталонов скриншотов"
+          git push origin "HEAD:refs/heads/$BRANCH" ||
+            { echo "::error::Пока обновлялись эталоны, в ветку запушили новые коммиты. Повесьте метку еще раз"; exit 1; }
